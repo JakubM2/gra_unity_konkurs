@@ -1,22 +1,32 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
 {
-
     public static GameMaster gm;
+    private Player player;
+
+    public Transform playerPrefab;
+    public Transform spawnPoint;
+    public int spawnDelay = 2;
+
+    //coins
+    public int points;
+    public Text PointText;
 
     void Start()
     {
         if (gm == null)
         {
-            gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>(); //chyba dodać "_" taki znaczek jescze
+            gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>(); //trzeba było dodać TAG
         }
     }
 
-    public Transform playerPrefab;
-    public Transform spawnPoint;
-    public int spawnDelay = 2;
+    void Update()
+    {
+        PointText.text = ("Pieniądze: " + points);
+    }
 
     public IEnumerator RespawnPlayer()
     {
