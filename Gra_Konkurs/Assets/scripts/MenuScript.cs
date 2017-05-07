@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class MenuScript : MonoBehaviour
 {
+    //gameMaster -> saveScore, highScore etc
+    private GameMaster gm;
+
     //add intro&logo to game
     private CanvasGroup fadeGroup;
     private float fadeInSpeed = 0.33f;
@@ -13,10 +16,21 @@ public class MenuScript : MonoBehaviour
     public Transform NewGame_Panel;
     public Transform Options_Panel;
 
+    //HighScore & "Score Board"
+    public Text maxCash;
+    public Text maxHP;
+    public Text maxPoint;
+    public Text death;
+    public Text enemyKill;
+
     private Vector3 desieredMenuPosition;
-    
+
     private void Start()
     {
+        gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();   //Add GameMaster
+
+        gm.Load(); //dzięki temu będą "świerze" dane
+
         //fadeGroup = FindObjectOfType<CanvasGroup>();
 
         //fadeGroup.alpha = 1;
@@ -29,6 +43,13 @@ public class MenuScript : MonoBehaviour
 
     private void Update()
     {
+        //Score Board -> Update text & Update Values
+            maxCash.text = ("Maks Pieniędzy: " + gm.highScore); //dokończyć dodawanie danych ze skryptu SaveScript
+            maxHP.text = ("Maks Zachowango życia: " + 0); //dokończyć
+            maxPoint.text = ("maks Punktów: " + gm.highPoint); //dokończyć
+            death.text = ("Ilość Śmierci: " + gm.death); //dokończyć
+            enemyKill.text = ("Zabitych Przeciwników: " + 0); //dokończyć
+        
         //fadeGroup.alpha = 1 - Time.timeSinceLevelLoad * fadeInSpeed;
 
         //menu navigation
