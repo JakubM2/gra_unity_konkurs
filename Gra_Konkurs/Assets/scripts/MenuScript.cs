@@ -8,6 +8,14 @@ public class MenuScript : MonoBehaviour
     //gameMaster -> saveScore, highScore etc
     private GameMaster gm;
 
+    private Player player;
+
+    //Options Menu
+    public Slider[] volumeSliders;
+    public Toggle[] resolutionToggels;
+    public int[] screenWidths;
+    int activeScreenIndex; //domyślnie będzie otwierany w 1280x720
+
     //add intro&logo to game
     private CanvasGroup fadeGroup;
     private float fadeInSpeed = 0.33f;
@@ -39,16 +47,26 @@ public class MenuScript : MonoBehaviour
 
         //add buttons on-click event to levels
         initNewGame();
+
+        activeScreenIndex = PlayerPrefs.GetInt("screen res index");
+        bool isFullScreen = (PlayerPrefs.GetInt("fullscreen") == 1)?true:false;
+
+        for(int i = 0; i <resolutionToggels.Length; i++)
+        {
+            resolutionToggels[i].isOn = i == activeScreenIndex;
+        }
+        SetFullScreen(isFullScreen);
     }
 
     private void Update()
     {
-        //Score Board -> Update text & Update Values
+        //Zrobić też pobieranie zmiennych z plików binarnych!!! po to jest funcka Load() w Start()
+        //Score Board -> Update text & Update Values 
             maxCash.text = ("Maks Pieniędzy: " + gm.highScore); //dokończyć dodawanie danych ze skryptu SaveScript
-            maxHP.text = ("Maks Zachowango życia: " + 0); //dokończyć
+            //maxHP.text = ("Maks Zachowango życia: " + player.playerStats.Health); //dokończyć
             maxPoint.text = ("maks Punktów: " + gm.highPoint); //dokończyć
-            death.text = ("Ilość Śmierci: " + gm.death); //dokończyć
-            enemyKill.text = ("Zabitych Przeciwników: " + 0); //dokończyć
+            death.text = ("Ilość Śmierci: " + gm.playerDeath); //dokończyć
+            enemyKill.text = ("Zabitych Przeciwników: " + gm.enemyKill); //dokończyć
         
         //fadeGroup.alpha = 1 - Time.timeSinceLevelLoad * fadeInSpeed;
 
@@ -104,10 +122,32 @@ public class MenuScript : MonoBehaviour
                 desieredMenuPosition = Vector3.zero;
                 break;
             case 1:
-                desieredMenuPosition = Vector3.right * Screen.width;
+                if (activeScreenIndex == 2)
+                {
+                    desieredMenuPosition = Vector3.right * 1920;
+                }
+                else if (activeScreenIndex == 1)
+                {
+                    desieredMenuPosition = Vector3.right * (1280 + (1280 / 2));
+                }
+                else if (activeScreenIndex == 0)
+                {
+                    desieredMenuPosition = Vector3.right * (720 + 81);
+                }
                 break;
             case 2:
-                desieredMenuPosition = Vector3.left * Screen.width;
+                if (activeScreenIndex == 2)
+                {
+                    desieredMenuPosition = Vector3.left * 1920;
+                }
+                else if (activeScreenIndex == 1)
+                {
+                    desieredMenuPosition = Vector3.left * (1280 + (1280 / 2));
+                }
+                else if (activeScreenIndex == 0)
+                {
+                    desieredMenuPosition = Vector3.left * (720 + 81);
+                }
                 break;
             case 3:
                 desieredMenuPosition = Vector3.down * Screen.height;
@@ -164,4 +204,64 @@ public class MenuScript : MonoBehaviour
     {
         Debug.Log("Selecting Levels: " + currentIndex);
     }
+
+    //screen resolution
+
+    public void SetScreenResolution(int i)
+    {
+        if(resolutionToggels[i].isOn)
+        {
+            activeScreenIndex = i;
+            float aspectRatio = 16 / 9f;
+            Screen.SetResolution(screenWidths[i], (int)(screenWidths[i] / aspectRatio), false);
+            PlayerPrefs.SetInt("screen res index", activeScreenIndex);
+            PlayerPrefs.Save();
+        }
+    }
+
+    public void SetFullScreen(bool isFullScreen)
+    {
+        for (int i = 0; i < resolutionToggels.Length; i++)
+        {
+            resolutionToggels[i].interactable = !isFullScreen;
+        }
+        if(isFullScreen)
+        {
+            Resolution[] allResolutions = Screen.resolutions;
+            Resolution maxResolutions = allResolutions[allResolutions.Length - 1];
+            Screen.SetResolution(maxResolutions.width, maxResolutions.height, true);
+        }
+        else
+        {
+            SetScreenResolution(activeScreenIndex);
+        }
+        PlayerPrefs.SetInt("fullscreen", ((isFullScreen) ? 1 : 0));
+        PlayerPrefs.Save();
+    }
+    
+    public void SetMusicVolume()
+    {
+        //add save ect in gamemaster
+    }
+
+    public void SetSoundsVolume()
+    {
+        //add save ect in gamemaster
+    }
+
 }
+
+/*
+ * if (activeScreenIndex == 2)
+                {
+                    desieredMenuPosition = Vector3.left * 1920;
+                }
+                else if (activeScreenIndex == 1)
+                {
+                    desieredMenuPosition = Vector3.left * (1280 + (1280 / 2));
+                }
+                else if (activeScreenIndex == 0)
+                {
+                    desieredMenuPosition = Vector3.left * (720 + 81);
+                }
+*/

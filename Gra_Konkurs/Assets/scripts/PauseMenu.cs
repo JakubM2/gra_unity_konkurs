@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    //
+    
     public GameObject PauseUI;
 
     private bool paused = false;
@@ -42,10 +42,10 @@ public class PauseMenu : MonoBehaviour
         //Options
         Application.LoadLevel(Application.loadedLevel);
     }
-    public void SaveGame()
+    /*public void SaveGame()
     {
         //add save game script
-    }
+    }*/
     public void MainMenu()
     {
         Application.LoadLevel(0);

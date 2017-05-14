@@ -6,6 +6,9 @@ public class Player : MonoBehaviour {
 
     private GameMaster gm;
 
+    [SerializeField]
+    private GameObject fireball;
+
     public class PlayerStats
     {
         public float Health = 100f;
@@ -30,6 +33,11 @@ public class Player : MonoBehaviour {
         if (transform.position.y <= fallBoundary)
         {
             DamagePlayer (99999999);
+        }
+        //shoot
+        if(Input.GetButtonDown("Fire1"))
+        {
+            Shoot();
         }
 
         //save&load game
@@ -67,18 +75,18 @@ public class Player : MonoBehaviour {
         playerStats.Health -= damage;
         if (playerStats.Health <= 0)
         {
-           //highPoint --> before kill player
-           if(PlayerPrefs.HasKey("highPoint"))
-            {
-                if(PlayerPrefs.GetInt("highPoint") < gm.highPoint)
-                {
-                    PlayerPrefs.GetInt("highPoint", gm.highPoint);
-                }
-            }
-            else
-            {
-                PlayerPrefs.GetInt("highPoint", gm.highPoint);
-            }
+            /*highPoint --> before kill player
+            if(PlayerPrefs.HasKey("highPoint"))
+             {
+                 if(PlayerPrefs.GetInt("highPoint") < gm.highPoint)
+                 {
+                     PlayerPrefs.GetInt("highPoint", gm.highPoint);
+                 }
+             }
+             else
+             {
+                 PlayerPrefs.GetInt("highPoint", gm.highPoint);
+             }*/
             GameMaster.KillPlayer(this);
         }
     }
@@ -89,7 +97,7 @@ public class Player : MonoBehaviour {
         {
             Destroy(col.gameObject);
             gm.points += 1;
-            //add sounds
+            gm.PlaySound("CoinsCollect");//play sounds when we collect some coins
         }
         else if (col.CompareTag("Heart"))
         {
@@ -97,12 +105,20 @@ public class Player : MonoBehaviour {
             if (playerStats.Health != 100)
             {
                 playerStats.Health += (100 - playerStats.Health);
-                //add sounds
+                gm.PlaySound("HealthPlayer"); //play sound when player collect health
             }
         } else if (col.CompareTag("Spikes"))
         {
             DamagePlayer(spikesDamage);
+            gm.PlaySound("DamagePlayer"); //play sound when player "is hit" -> prefect English xddd
+            //change player color -->red
         }
+    }
 
+    public void Shoot()
+    {
+        GameObject clone = Instantiate(fireball) as GameObject;
+        //add facing right & left
+            clone.transform.position = transform.position;
     }
 }

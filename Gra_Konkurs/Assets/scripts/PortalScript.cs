@@ -7,12 +7,12 @@ public class PortalScript : MonoBehaviour {
     public int LevelToLoad;
 
     private GameMaster gm;
-    private GameMaster player;
+    private GameObject player;
 
     void Start()
     {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<GameMaster>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<GameObject>();
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -23,7 +23,13 @@ public class PortalScript : MonoBehaviour {
             if (Input.GetKeyDown("e"))
             {
                 SaveScore();
-                Application.LoadLevel(LevelToLoad);
+                if(Application.loadedLevel == 1)
+                {
+                    Application.LoadLevel(LevelToLoad);
+                } else if(Application.loadedLevel ==2)
+                {
+                    Application.LoadLevel(LevelToLoad+1);
+                }
             }
         }
     }
@@ -35,7 +41,14 @@ public class PortalScript : MonoBehaviour {
             if(Input.GetKeyDown("e"))
             {
                 SaveScore();
-                Application.LoadLevel(LevelToLoad);
+                if (Application.loadedLevel == 1)
+                {
+                    Application.LoadLevel(LevelToLoad);
+                }
+                else if (Application.loadedLevel == 2)
+                {
+                    Application.LoadLevel(LevelToLoad + 1);
+                }
             }
         }
     }
@@ -47,12 +60,16 @@ public class PortalScript : MonoBehaviour {
             gm.InputText.text = (" ");
         }
     }
+
     //to zapisuje wynik tylko "po przejściu przez drzwi", a trzeba w innym pliku stworzyć cały system zapisu, aby korzystać z niego w mainMenu, a także system zapisu
-    void SaveScore()
+    public void SaveScore()
     {
         PlayerPrefs.SetInt("Points", gm.points);
         PlayerPrefs.SetInt("highPoint", gm.highPoint);
         PlayerPrefs.SetString("filename", gm.filename);
-        //add player prefs + player int Health
+        PlayerPrefs.SetInt("PlayerDeath", gm.playerDeath);
+        PlayerPrefs.SetInt("PlayerHighScore", gm.highScore);
+        PlayerPrefs.SetInt("EnemyKils", gm.enemyKill);
+        //PlayerPrefs.SetFloat("PlayerHealth", player.playerStats.Health); ->>Opcional
     }
 }
