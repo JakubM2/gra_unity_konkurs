@@ -63,8 +63,9 @@ public class DialogScript : MonoBehaviour {
                 }
                 break;
             case 5:
-                Destroy(gm.DialoguesText); //opcjonalnie nie niszczyć, a dawac wartość " " do wyświetlenia
-                Destroy(this);
+                gm.DialoguesText.text = " ";
+                //Destroy(gm.DialoguesText); //opcjonalnie nie niszczyć, a dawac wartość " " do wyświetlenia
+                //Destroy(this);
                 break;
         }
     }

@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireBall : MonoBehaviour {
+public class ArrowScript : MonoBehaviour {
 
     private GameMaster gm;
     private GameObject player;
-    private GameObject enemies;
+    private GameObject enemy;
 
     private Rigidbody2D myBody;
-    private float speed = 20f;
-
-    
+    private float arrowSpeed = 2f;
 
     void Awake()
     {
@@ -22,20 +20,21 @@ public class FireBall : MonoBehaviour {
     {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<GameObject>();
-        enemies = GameObject.FindGameObjectWithTag("Enemy").GetComponent<GameObject>();
     }
 
     void FixedUpdate()
     {
-        myBody.velocity = new Vector2(speed, 0);
+        myBody.velocity = new Vector2(arrowSpeed, 0);
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if(col.CompareTag("Enemy"))
+        if (col.CompareTag("Player"))
         {
-            Destroy(this);
-            gm.PlaySound("DamageEnemy");//add music, ect
+            Destroy(gameObject);
+            //Player.PlayerStats.
+            //Destroy(GameObject.FindGameObjectWithTag("Fire"));
+            gm.PlaySound("DamagePlayer");
         }
     }
 }

@@ -3,30 +3,32 @@ using System.Collections;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;
-    //public GameObject player;
-    public float m_speed = 0.1f;
 
-    Camera mycam;
+    public GameObject player;
+
+    public float m_speed = 0.1f;
 
     void Start()
     {
-        mycam = GetComponent<Camera>();
-        //player = GameObject.FindGameObjectsWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("Player");
     }
-    //add player clone --> transform position ect
-    void Update()
+
+    void FixedUpdate()
     {
-
-        if (target == null)
-            return;
-
-        mycam.orthographicSize = (Screen.height / 100f);
-
-        if (target)
+        if(player == null)
         {
-            transform.position = Vector3.Lerp(transform.position, target.position, m_speed) + new Vector3(0, 0, -10);
+            FindPlayer();
         }
+
+        if(player)
+        {
+            transform.position = Vector3.Lerp(transform.position, player.transform.position, m_speed) + new Vector3(0, 0, -10);
+        }
+    }
+
+    public void FindPlayer()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 }
 

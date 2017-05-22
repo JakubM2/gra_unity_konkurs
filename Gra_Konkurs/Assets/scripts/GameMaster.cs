@@ -78,11 +78,17 @@ public class GameMaster : MonoBehaviour
     //ilość zabitych przeciwników
     public int enemyKill;
 
+    //player on sceene
+    public int howmuchplayer;
+
     //high Score (XP)
     public int highScore;
 
     //inputField -- name of your game save
     public string filename;
+
+    //load game
+    public string loadgamename;
 
     //SaveScript - playerPosition
     public float playerPositionX;
@@ -213,6 +219,7 @@ public class GameMaster : MonoBehaviour
     void Update()
     {
         Debug.Log(filename + " :Oto filename");
+        Debug.Log(loadgamename + " :Oto loadgamename");
     }
 
     //Save&Load&Delete
@@ -257,6 +264,33 @@ public class GameMaster : MonoBehaviour
             File.Delete(Application.persistentDataPath + "/" + filename + ".dat");
         }
     }
+    
+    public void LoadGameName()
+    {
+        if (File.Exists(Application.persistentDataPath + "/" + loadgamename + ".dat"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/" + loadgamename + ".dat", FileMode.Open);
+
+            PlayerStats data = (PlayerStats)bf.Deserialize(file);
+            file.Close();
+
+            playerPositionX = data.playerPosX;
+            playerPositionY = data.playerPosY;
+            playerPositionZ = data.playerPosZ;
+            points = playerPoints;
+            //add load level
+
+            Debug.Log(Application.persistentDataPath + " załadowano");
+        }
+    }
+    public void DeleteGameName()
+    {
+        if (File.Exists(Application.persistentDataPath + "/" + loadgamename + ".dat"))
+        {
+            File.Delete(Application.persistentDataPath + "/" + loadgamename + ".dat");
+        }
+    }
 
     [Serializable]
     class PlayerStats
@@ -271,9 +305,14 @@ public class GameMaster : MonoBehaviour
     {
         filename = newText;
     }
-    
+
+    public void loadGameName(string newText)
+    {
+        loadgamename = newText;
+    }
+
     //Respawn player&Kill player
-    public IEnumerator RespawnPlayer()
+    public IEnumerator RespawnPlayer(int howmuch)
     {
         Debug.Log("TODO: Add waiting for spawn sound");
         yield return new WaitForSeconds(spawnDelay);
@@ -286,7 +325,8 @@ public class GameMaster : MonoBehaviour
     {
         gm.playerDeath += 1;
         Destroy(player.gameObject);
-        gm.StartCoroutine(gm.RespawnPlayer());
+        gm.StartCoroutine(gm.RespawnPlayer(1));
+        //add if with checking how much we have player on scene
     }
 
     //AudioManager

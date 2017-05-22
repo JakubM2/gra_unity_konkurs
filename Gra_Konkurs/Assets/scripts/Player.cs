@@ -19,13 +19,15 @@ public class Player : MonoBehaviour {
 
     public int fallBoundary = -20;
     public int spikesDamage = 10;
+    public int fireDamage = 25;
+    public int arrowDamage = 30;
 
     void Start()
     {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
     }
 
-    void Update ()
+    void FixedUpdate ()
     {
         gm.HealthText.text = ("Życie: " + playerStats.Health);
         gm.PointText.text = ("Pieniądze: " + gm.points);
@@ -39,35 +41,6 @@ public class Player : MonoBehaviour {
         {
             Shoot();
         }
-
-        //save&load game
-        if(Input.GetKeyDown(KeyCode.X))
-        {
-            GameMaster.gm.Delete();
-        }
-        if(Input.GetButtonDown("Save")) //f5
-        {
-            GameMaster.gm.Save();
-            {
-                GameMaster.gm.playerPositionX = transform.position.x;
-                GameMaster.gm.playerPositionY = transform.position.y;
-                GameMaster.gm.playerPositionZ = transform.position.z;
-                GameMaster.gm.points = GameMaster.gm.playerPoints;//zmienić to!!!
-            }
-        }
-        if (Input.GetButtonDown("Load")) //f9
-        {
-            GameMaster.gm.Load();
-            {
-                transform.position = new Vector4
-                (
-                   GameMaster.gm.playerPositionX,
-                   GameMaster.gm.playerPositionY,
-                   GameMaster.gm.playerPositionZ,
-                   GameMaster.gm.playerPoints             //points or playerPoints
-                );
-            }
-        };
     }
 
     public void DamagePlayer (int damage)
@@ -93,7 +66,7 @@ public class Player : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if(col.CompareTag("Coins"))
+        if (col.CompareTag("Coins"))
         {
             Destroy(col.gameObject);
             gm.points += 1;
@@ -113,12 +86,66 @@ public class Player : MonoBehaviour {
             gm.PlaySound("DamagePlayer"); //play sound when player "is hit" -> prefect English xddd
             //change player color -->red
         }
+        else if (col.CompareTag("Platform_fire_0.4"))
+        {
+            gm.PlaySound("DamagePlayer"); //play sound when player "is hit" -> prefect English xddd
+            DamagePlayer(fireDamage);
+        }
+        else if (col.CompareTag("EnemyArrow"))
+        {
+            gm.PlaySound("DamagePlayer"); //play sound when player "is hit" -> prefect English xddd
+            DamagePlayer(arrowDamage);
+        } else if (col.CompareTag("Torch"))
+        {
+            //SAVE GAME!!!!
+            SavePlayer();
+        }
     }
 
     public void Shoot()
     {
         GameObject clone = Instantiate(fireball) as GameObject;
-        //add facing right & left
-            clone.transform.position = transform.position;
+        clone.transform.position = transform.position;
+        gm.PlaySound("Fire");
+    }
+
+    public void SavePlayer()
+    {
+        GameMaster.gm.Save();
+        {
+            GameMaster.gm.playerPositionX = transform.position.x;
+            GameMaster.gm.playerPositionY = transform.position.y;
+            GameMaster.gm.playerPositionZ = transform.position.z;
+            GameMaster.gm.points = GameMaster.gm.playerPoints;//zmienić to!!!
+        }
     }
 }
+
+//save&load game, we can only save game when we playing, but we can delete and load game in MeinMenu
+/*if(Input.GetKeyDown(KeyCode.X))
+{
+    GameMaster.gm.Delete();
+}
+if(Input.GetButtonDown("Save")) //f5
+{
+    GameMaster.gm.Save();
+    {
+        GameMaster.gm.playerPositionX = transform.position.x;
+        GameMaster.gm.playerPositionY = transform.position.y;
+        GameMaster.gm.playerPositionZ = transform.position.z;
+        GameMaster.gm.points = GameMaster.gm.playerPoints;//zmienić to!!!
+    }
+}
+if (Input.GetButtonDown("Load")) //f9
+{
+    GameMaster.gm.Load();
+    {
+        transform.position = new Vector4
+        (
+           GameMaster.gm.playerPositionX,
+           GameMaster.gm.playerPositionY,
+           GameMaster.gm.playerPositionZ,
+           GameMaster.gm.playerPoints             //points or playerPoints
+        );
+    }
+};*/

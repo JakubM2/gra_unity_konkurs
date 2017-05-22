@@ -33,6 +33,11 @@ public class MenuScript : MonoBehaviour
 
     private Vector3 desieredMenuPosition;
 
+    private void Awake()
+    {
+        activeScreenIndex = 1;
+    }
+
     private void Start()
     {
         gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();   //Add GameMaster
@@ -48,6 +53,8 @@ public class MenuScript : MonoBehaviour
         //add buttons on-click event to levels
         initNewGame();
 
+
+        //poprawić bo powinno być aktywne to co jest dwie linijki niżej, ale no cóż...
         activeScreenIndex = PlayerPrefs.GetInt("screen res index");
         bool isFullScreen = (PlayerPrefs.GetInt("fullscreen") == 1)?true:false;
 
@@ -124,7 +131,7 @@ public class MenuScript : MonoBehaviour
             case 1:
                 if (activeScreenIndex == 2)
                 {
-                    desieredMenuPosition = Vector3.right * 1920;
+                    desieredMenuPosition = Vector3.right * 1280;
                 }
                 else if (activeScreenIndex == 1)
                 {
@@ -138,7 +145,7 @@ public class MenuScript : MonoBehaviour
             case 2:
                 if (activeScreenIndex == 2)
                 {
-                    desieredMenuPosition = Vector3.left * 1920;
+                    desieredMenuPosition = Vector3.left * 1280;
                 }
                 else if (activeScreenIndex == 1)
                 {
